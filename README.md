@@ -4,8 +4,8 @@ Il progetto utilizza un database MySQL e il MICRO-ORM https://github.com/dieselp
 
 istruttore, utente: mrossi password: password1
 
-tracciatore utente: lbianchi password: password2
+tracciatore, utente: lbianchi password: password2
 
-utente utente: gverdi password: password3
+utente, utente: gverdi password: password3
 
-studente utente: aneri password: password4
+studente, utente: aneri password: password4
