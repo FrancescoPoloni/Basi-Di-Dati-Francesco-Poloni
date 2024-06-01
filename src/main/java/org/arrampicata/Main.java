@@ -6,8 +6,14 @@ import de.vandermeer.asciitable.AsciiTable;
 import java.sql.Time;
 import java.sql.Date;
 import java.util.*;
+/*-------------------------------------------------------------------------------------------------
+Queste sono le credenziali di 4 utenti esempio
 
-
+istruttore, utente: mrossi password: password1 = gJYWkgX+DzDisyonclDAIDwU9HbXMTD6PDt9DVnaXvSsgjBM1dUDHRXynAKIDhB2
+tracciatore utente: lbianchi password: password2 = Kycp6kqeAxPl+Z95aNVmMWonfu8+E2Yzcwz6AP2YVMQx8UVTe+jqiU225okvgcrd
+utente utente: gverdi password: password3 = ywlXCERrP5hPUwCJUS9Rd5Mqy0eMhbP+ZAxJl9kvGhm93s8U5e2jTZBdOQLyxkZ6
+studente utente: aneri password: password4 = YCeTlRM1uIEqq33Dd8gWJ3MW/ITBmu6KU3AsYKyIPb08R+dE7dDmQprFL3wYxYgp
+---------------------------------------------------------------------------------------------------*/
 public class Main {
     public static void main(String[] args) {
         Database db = new Database();
@@ -15,28 +21,10 @@ public class Main {
         db.setUser("root");
         db.setPassword("SuperPassword");
         DatiSessione dati = new DatiSessione();
-        //istruttore, utente: mrossi password: password1 = gJYWkgX+DzDisyonclDAIDwU9HbXMTD6PDt9DVnaXvSsgjBM1dUDHRXynAKIDhB2
-        //tracciatore utente: lbianchi password: password2 = Kycp6kqeAxPl+Z95aNVmMWonfu8+E2Yzcwz6AP2YVMQx8UVTe+jqiU225okvgcrd
-        //studente utente: aneri password: password4 = YCeTlRM1uIEqq33Dd8gWJ3MW/ITBmu6KU3AsYKyIPb08R+dE7dDmQprFL3wYxYgp
-        //utente utente: gverdi password: password3 = ywlXCERrP5hPUwCJUS9Rd5Mqy0eMhbP+ZAxJl9kvGhm93s8U5e2jTZBdOQLyxkZ6
-
-        //System.out.println(PassManager.encryptPassword("password3"));
-        //System.out.println(PassManager.checkPassword("password1",PassManager.encryptPassword("password1")));
 
         String ruolo = login(db,dati);
         dati.setRuolo(ruolo);
-        //mostraOpzioni(ruolo);
-        //aggiungiVia(db,dati);
-        //mostraVia(db);
-        //mostraCommenti(db);
-        //scriviCommento(db,dati);
-        //aggiungiVia(db,dati);
-        //cancellaVia(db);
-        //resettaParete(db);
-        //aggiungiLezione(db,dati);
-        //cancellaLezione(db);
-        mostraLezioni(db);
-
+        mostraOpzioni(db,dati);
     }
 
     private static String login(Database db, DatiSessione dati){
@@ -62,24 +50,130 @@ public class Main {
         return db.sql("select ruolo from utente where username = ?",username).first(String.class);
     }
 
-    private static void mostraOpzioni(String ruolo,DatiSessione dati){
-        System.out.println("l'utente selezionato ha i permessi del ruolo: "+ruolo);
+    private static void mostraOpzioni(Database db,DatiSessione dati){
+        Scanner scanner = new Scanner(System.in);
+        String scelta;
+        boolean check = true;
+        System.out.println("l'utente selezionato ha i permessi del ruolo: "+dati.getRuolo());
         System.out.println("cosa vuoi fare? scrivi la parte tra '' per scegliere");
         System.out.println("'mostra vie' per vedere le vie");
         System.out.println("'mostra commenti' per vedere i commenti su una via");
         System.out.println("'scrivi commento' per aggiungere un commendo ad una via");
-        if(ruolo.equals("tracciatore")){
+        if(dati.getRuolo().equals("tracciatore")){
             System.out.println("'aggiungi via' per aggiungere una via");
             System.out.println("'cancella via' per cancellare una via");
             System.out.println("'resetta parete' per cancellare tutte le vie di una parete");
-        }
-        if(ruolo.equals("istruttore")){
+            while (check==true) {
+                scelta = scanner.nextLine();
+                switch (scelta) {
+                    case "mostra vie":
+                        mostraVia(db);
+                        check = false;
+                        break;
+                    case "mostra commenti":
+                        mostraCommenti(db);
+                        check = false;
+                        break;
+                    case "scrivi commento":
+                        scriviCommento(db, dati);
+                        check = false;
+                        break;
+                    case "aggiungi via":
+                        aggiungiVia(db, dati);
+                        check = false;
+                        break;
+                    case "cancella via":
+                        cancellaVia(db);
+                        check = false;
+                        break;
+                    case "resetta parete":
+                        resettaParete(db);
+                        check = false;
+                        break;
+                    default:
+                        System.out.println("Input non valido, riprova!");
+                }
+            }
+        } else if(dati.getRuolo().equals("istruttore")){
             System.out.println("'aggiungi lezione' per aggiungere una lezione");
             System.out.println("'cancella lezione' per cancellare una lezione");
-        }
-        if(ruolo.equals("studente")){
+            while (check==true) {
+                scelta = scanner.nextLine();
+                switch (scelta) {
+                    case "mostra vie":
+                        mostraVia(db);
+                        check = false;
+                        break;
+                    case "mostra commenti":
+                        mostraCommenti(db);
+                        check = false;
+                        break;
+                    case "scrivi commento":
+                        scriviCommento(db, dati);
+                        check = false;
+                        break;
+                    case "aggiungi lezione":
+                        aggiungiLezione(db,dati);
+                        check = false;
+                        break;
+                    case "cancella lezione":
+                        cancellaLezione(db);
+                        check = false;
+                        break;
+                    default:
+                        System.out.println("Input non valido, riprova!");
+                }
+            }
+        } else if(dati.getRuolo().equals("studente")){
             System.out.println("'mostra lezioni' per vedere le lezioni disponibili");
             System.out.println("'iscriviti' per iscriverti ad una lezione");
+            while (check==true) {
+                scelta = scanner.nextLine();
+                switch (scelta) {
+                    case "mostra vie":
+                        mostraVia(db);
+                        check = false;
+                        break;
+                    case "mostra commenti":
+                        mostraCommenti(db);
+                        check = false;
+                        break;
+                    case "scrivi commento":
+                        scriviCommento(db, dati);
+                        check = false;
+                        break;
+                    case "mostra lezioni":
+                        mostraLezioni(db);
+                        check = false;
+                        break;
+                    case "iscriviti":
+                        iscrizioneLezione(db, dati);
+                        check = false;
+                        break;
+                    default:
+                        System.out.println("Input non valido, riprova!");
+                }
+            }
+        } else {
+            while (check==true) {
+                scelta = scanner.nextLine();
+                switch (scelta) {
+                    case "mostra vie":
+                        mostraVia(db);
+                        check = false;
+                        break;
+                    case "mostra commenti":
+                        mostraCommenti(db);
+                        check = false;
+                        break;
+                    case "scrivi commento":
+                        scriviCommento(db, dati);
+                        check = false;
+                        break;
+                    default:
+                        System.out.println("Input non valido, riprova!");
+                }
+            }
         }
     }
 
@@ -103,7 +197,6 @@ public class Main {
         dove=scanner.nextLine();
         Long checkStanza = db.sql("select count(*) from via where via.stanza = ?",dove).first(Long.class);
         if (checkStanza==0) {dove=null;}
-        System.out.println(checkStanza);
         System.out.println("le vuoi ordinate per 'grado' o per 'tipo'? di default è per stanza");
         filtro = scanner.nextLine();
         if (!(filtro.equals("grado") || filtro.equals("tipo"))){
@@ -528,6 +621,7 @@ public class Main {
             trans.commit();
         } catch (Throwable t) {
             trans.rollback();
+            System.out.println("la tranzazione non è andata a buon fine");
         }
     }
 
@@ -556,17 +650,21 @@ public class Main {
 
     private static void iscrizioneLezione(Database db, DatiSessione dati) {
         Scanner scanner = new Scanner(System.in);
-        String lezione;
+        String lezione = "";
         boolean check = true;
         while (check == true){
             System.out.println("A che lezione ti vuoi iscrivere?\n digita l'id");
             mostraLezioni(db);
             lezione = scanner.nextLine();
-            Long checkLezione db.sql("select count(*) from lezione").where("id=?", lezione).first(Long.class);
+            Long checkLezione = db.sql("select count(*) from lezione where id=?", lezione).first(Long.class);
             if (checkLezione==0) {
                 System.out.println("La lezione selezionata non e' disponibile! riprova");
             } else check=false;
         }
-        db.sql("insert " ).execute();
+        try {
+            db.insert(new Iscrizione(Integer.valueOf(lezione), dati.getUsername()));
+        }catch (Throwable T){
+            System.out.println("Errore probabilmente l'utente e' gia' iscritto a quella lezione");
+        }
     }
 }
